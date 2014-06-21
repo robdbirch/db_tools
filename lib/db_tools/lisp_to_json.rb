@@ -3,7 +3,7 @@ module DbTools
   class LispToJson
 
     def self.get_exe
-      dir = File.expand_path '../../../bin', __FILE__
+      dir = File.expand_path '../../../lib/sbcl', __FILE__
       if RbConfig::CONFIG['host_os'].include? 'linux'
         dir + '/linux/model2json'
       else
