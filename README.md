@@ -1,7 +1,7 @@
 # DbTools
 
-A hasty utility to back up a data dependency between `mongo` and `postgres` and zip and store the backups on a g-drive
-Each the `mongo` document contains a `lisp s-expression` this can be dumped to a json format. 
+A hasty utility to back up a data dependency between `mongo` and `postgres` and zip and store the backups in `G-Drive`.
+Each the `mongo` document contains a `lisp s-expression`, which can be dumped to a json format. 
 This distribution comes with two `SBCL` executables that will work on `linux` and `OS X`
 
 ## Installation

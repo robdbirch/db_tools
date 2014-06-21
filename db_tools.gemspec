@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = DbTools::VERSION
   spec.authors       = ["Robert Birch"]
   spec.email         = ["robdbirch@gmail.com"]
-  spec.summary       = %q{Import/Export noXaos models}
-  spec.description   = %q{Import/Export noXaos models}
+  spec.summary       = %q{Import/Export data models}
+  spec.description   = %q{Import/Export data models}
   spec.homepage      = 'http://www.noxaos.com'
   spec.license       = "MIT"
 

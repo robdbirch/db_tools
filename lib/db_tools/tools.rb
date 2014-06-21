@@ -47,5 +47,9 @@ module DbTools
       def export_pretty
         @mongo.export_pretty
       end
+
+      def mongo_delete_days_old(days)
+
+      end
   end
 end

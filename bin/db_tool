@@ -22,6 +22,7 @@ options[:pretty] = false
 options[:remote] = false
 options[:gzip] = false
 options[:db_operation] = 'mongo' # or postgres
+options[:days_old] = nil
 
 OptionParser.new do |opts|
   opts.banner = 'Usage: db_tool [options]'
@@ -36,6 +37,10 @@ OptionParser.new do |opts|
     else
       raise ArgumentError.new "Directory #{d} does not exist"
     end
+  end
+
+  opts.on('-d', '--days-old number_of_days', 'Delete backups that are so many days old') do |d|
+    options[:days_old] = d
   end
 
   opts.on('-m', '--models model', 'A comma separated list of one or more models') do |m|
