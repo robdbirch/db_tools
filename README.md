@@ -1,6 +1,8 @@
 # DbTools
 
-TODO: Write a gem description
+A hasty utility to back up a data dependency between `mongo` and `postgres` and zip and store the backups on a g-drive
+Each the `mongo` document contains a `lisp s-expression` this can be dumped to a json format. 
+This distribution comes with two `SBCL` executables that will work on `linux` and `OS X`
 
 ## Installation
 
@@ -17,10 +19,6 @@ Or install it yourself as:
     $ gem install db_tools
 
 ## Usage
-
-A hasty utility to back up a data dependency between `mongo` and `postgres` and zip and store the backups on a g-drive
-Each the `mongo` document contains a `lisp s-expression` this can be dumped to a json format. 
-This distribution comes with two `SBCL` executables that will work on `linux` and `OS X`
 
             Usage: db_tool [options]
                 -c, --config config.yml          Contains config parameters
@@ -39,7 +37,7 @@ This distribution comes with two `SBCL` executables that will work on `linux` an
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/db_tools/fork )
+1. Fork it ( http://github.com/robdbirch/db_tools/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
