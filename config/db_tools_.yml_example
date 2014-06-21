@@ -1,0 +1,32 @@
+postgres:
+  host: localhost
+  port: 5432
+  database: jurasic_development
+  user: fflintstone
+  password:
+mongo:
+  host: localhost
+  port: 27017
+  database: dinosaurs
+  collection: models
+  query:  "\'{ modelid: { $in : %s } }\'"
+  data-dir:
+google:
+  service:
+    email: 1...@developer.gserviceaccount.com
+    pkey_file: /blah/blah/privatekey.p12
+  drive:
+    auth_user: fred.flintstone@bedrock.com
+    app_name: Sandbox
+    app_version: 0.0.1
+    folder: Mongo
+    tmp_dir:
+    cached_api:
+    share:
+      users:
+        - barney.rubble@bedrock.com
+      perm_type: user
+      role: writer
+
+
+

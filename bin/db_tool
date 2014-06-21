@@ -1,0 +1,122 @@
+#!/usr/bin/env ruby
+require 'date'
+require 'optparse'
+require 'yaml'
+require 'pg'
+require 'json'
+require 'fileutils'
+require 'awesome_print'
+require 'db_tools'
+include DbTools
+
+options = {}
+options[:config] = File.expand_path '../../config/db_tools.yml', __FILE__
+options[:db] = 'aicore'
+options[:collection] = 'models'
+options[:export_file] = "mongo-models-export-#{DateTime.now.strftime('%Y%m%d%H%M%S%L')}.json"
+options[:direction] = 'export'
+options[:data_dir] = nil
+options[:models] = nil
+options[:json] = false
+options[:pretty] = false
+options[:remote] = false
+options[:gzip] = false
+options[:db_operation] = 'mongo' # or postgres
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: db_tool [options]'
+
+  opts.on('-c', '--config config.yml', 'Contains config parameters' ) do |c|
+    options[:c] = c
+  end
+
+  opts.on('-D', '--data-dir dir', 'Directory for import/export') do |d|
+    if Dir.exist? d
+      options[:data_dir] = d
+    else
+      raise ArgumentError.new "Directory #{d} does not exist"
+    end
+  end
+
+  opts.on('-m', '--models model', 'A comma separated list of one or more models') do |m|
+    options[:models] = m.split(',')
+  end
+
+  opts.on('-i', '--import', 'Import Data') do
+    options[:direction] = 'import'
+  end
+
+  opts.on('-x', '--export', 'Export Data (default)') do
+    options[:direction] = 'export'
+  end
+
+  opts.on('-I', '--import-file file', 'Import input file (implied import)' ) do |f|
+    options[:import_file] = f
+  end
+
+  opts.on('-O', '--output-file file', 'Export output file (implied export)' ) do |f|
+    options[:direction] = export
+    options[:export_file] = f
+  end
+
+  opts.on('-j', '--json', 'Dump Models to json format') do
+    options[:json] = true
+  end
+
+  opts.on('-p', '--pretty', 'Pretty Export') do
+    options[:json] = true
+    options[:pretty] = true
+  end
+
+  opts.on('-r', '--remote', 'Send backup to remote store (see config/db_tools.yml)') do
+    options[:remote] = true
+  end
+
+  opts.on('-z', '--zip', 'GZip exported files') do
+    options[:gzip] = true
+  end
+
+  opts.on('-T', '--template', 'Dump configuration template to standard out') do
+    file = File.expand_path '../../config/db_tools.yml_example', __FILE__
+    puts IO.read(file)
+    exit
+  end
+
+  opts.on_tail('-h', '--help') do
+    puts opts
+    exit
+  end
+
+
+end.parse!
+
+raise ArgumentError.new 'Invalid config file' unless File.exist? options[:config]
+ap options[:config]
+config = YAML.load(File.read(options[:config]))
+options.merge! config.symbolize_keys
+
+DbTools::Logging.create_logger STDOUT, ::Logger::DEBUG
+tools = Tools.new options
+
+if options[:import_file] || options[:direction] == 'import'
+  tools.import
+else
+  if options[:json]
+    if options[:pretty]
+      tools.export_pretty
+    else
+      tools.export_json
+    end
+  else
+    tools.mongo_export
+    if options[:remote]
+      GoogleDrive.new(options).upload_file(options[:export_file]) unless options[:export_file].nil?
+    end
+
+    if options[:gzip]
+      Tools.zip_it options[:export_file] unless options[:export_file].nil?
+    end
+
+  end
+end
+
