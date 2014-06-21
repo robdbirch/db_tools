@@ -20,6 +20,7 @@ describe 'mongo' do
       options[:pretty_json] = false
       config = YAML.load(File.read (options[:config]))
       options.merge! config.symbolize_keys
+      options[:postgres][:database] = 'leadtrack_test'
       options
     end
 

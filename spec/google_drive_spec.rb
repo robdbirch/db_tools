@@ -76,7 +76,7 @@ describe 'google drive' do
               @config[:google][:drive][:share][:perm_type],
               @config[:google][:drive][:share][:role]
           )
-        expect(result['emailAddress']).to eq 'steve.weagraff@noxaos.com'
+        expect(result['emailAddress']).to eq @config[:google][:drive][:share][:users][0]
       end
     end
 

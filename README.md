@@ -19,7 +19,7 @@ Or install it yourself as:
 ## Usage
 
 A hasty utility to back up a data dependency between `mongo` and `postgres` and zip and store the backups on a g-drive
-Each the `mongo` document contains a  `lisp s-expression` this can be dumped to a json format. 
+Each the `mongo` document contains a `lisp s-expression` this can be dumped to a json format. 
 This distribution comes with two `SBCL` executables that will work on `linux` and `OS X`
 
             Usage: db_tool [options]
