@@ -2,7 +2,8 @@
 
 A hasty utility to back up a data dependency between `mongo` and `postgres` and zip and store the backups in `G-Drive`.
 Each the `mongo` document contains a `lisp s-expression`, which can be dumped to a json format. 
-This distribution comes with two `SBCL` executables that will work on `linux` and `OS X`
+This distribution comes with the hasty hack of two `SBCL` executables that will work on `linux` and `OS X`
+
 
 ## Installation
 
