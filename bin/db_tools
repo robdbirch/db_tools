@@ -28,7 +28,7 @@ OptionParser.new do |opts|
   opts.banner = 'Usage: db_tool [options]'
 
   opts.on('-c', '--config config.yml', 'Contains config parameters' ) do |c|
-    options[:c] = c
+    options[:config] = c
   end
 
   opts.on('-D', '--data-dir dir', 'Directory for import/export') do |d|
@@ -92,7 +92,6 @@ OptionParser.new do |opts|
     exit
   end
 
-
 end.parse!
 
 raise ArgumentError.new 'Invalid config file' unless File.exist? options[:config]
@@ -103,16 +102,28 @@ options.merge! config.symbolize_keys
 DbTools::Logging.create_logger STDOUT, ::Logger::DEBUG
 tools = Tools.new options
 
+def json_export(tools, options)
+  if options[:pretty]
+    tools.export_pretty
+  else
+    tools.export_json
+  end
+end
+
+def prepend_dir(file, options)
+  unless options[:data_dir].nil?
+    file = options[:data_dir] + '/' + file
+  end
+  file
+end
+
 if options[:import_file] || options[:direction] == 'import'
   tools.import
 else
   if options[:json]
-    if options[:pretty]
-      tools.export_pretty
-    else
-      tools.export_json
-    end
+    json_export tools, options
   else
+    options[:export_file] = prepend_dir options[:export_file], options
     tools.mongo_export
     if options[:remote]
       GoogleDrive.new(options).upload_file(options[:export_file]) unless options[:export_file].nil?
@@ -121,7 +132,6 @@ else
     if options[:gzip]
       Tools.zip_it options[:export_file] unless options[:export_file].nil?
     end
-
   end
 end
 

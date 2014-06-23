@@ -4,21 +4,6 @@ A hasty utility to back up a data dependency between `mongo` and `postgres` and 
 Each `mongo` document contains a `lisp s-expression`, which can be dumped to a json format. 
 This distribution comes with the hasty hack of two `SBCL` executables that will work on `linux` and `OS X`
 
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'db_tools'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install db_tools
-
 ## Usage
 
             Usage: db_tool [options]
