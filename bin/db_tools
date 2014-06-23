@@ -108,7 +108,7 @@ ap options[:config]
 config = YAML.load(File.read(options[:config]))
 options.merge! config.symbolize_keys
 
-def set_export_file
+def set_export_file(options)
   if options[:export_file].nil?
     if options[:db_operation] == 'postgres'
       options[:export_file] = "postgres-export-#{DateTime.now.strftime('%Y%m%d%H%M%S%L')}.json"
@@ -158,7 +158,7 @@ def do_postgres(tools, options)
 end
 
 DbTools::Logging.create_logger STDOUT, ::Logger::DEBUG
-set_export_file
+set_export_file options
 tools = Tools.new options
 
 if options[:db_operation] == 'postgres'

@@ -9,8 +9,8 @@ module DbTools
     end
 
     def get_command
-      host = 'localhost' || @config[:postgres][:host]
-      port = 5432 || @config[:postgres][:port]
+      host = @config[:postgres][:host] || 'localhost'
+      port = @config[:postgres][:port] || 5432
       'pg_dump -h ' + host + ' --port ' + port.to_s + ' --username ' + @config[:postgres][:user] + ' --data-only ' + ' --dbname ' + @config[:postgres][:database]
     end
 
