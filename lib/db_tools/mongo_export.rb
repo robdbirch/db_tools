@@ -17,8 +17,8 @@ module DbTools
     end
 
     def get_sql_conn
-      host = @config[:host] || 'localhost'
-      port = @config[:port] ||  5432
+      host = @config[:postgres][:host] || 'localhost'
+      port = @config[:postgres][:port] ||  5432
       DbTools.logger.info "Connecting to host: #{host} on port: #{port} database #{@config[:postgres][:database]} user: #{@config[:postgres][:user]} password: #{@config[:postgres][:password]}"
       PG.connect host: host, port: port, dbname: @config[:postgres][:database], user: @config[:postgres][:user], password: @config[:postgres][:password]
     end
