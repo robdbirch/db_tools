@@ -13,8 +13,8 @@ This distribution comes with the hasty hack of two `SBCL` executables that will 
             -m, --models model               A comma separated list of one or more models
             -i, --import                     Import Data
             -x, --export                     Export Data (default)
-            -I, --import-file file           Import input file (implied import)
-            -O, --output-file file           Export output file (implied export)
+            -I, --import-file file           Import input file (implied --import)
+            -O, --output-file file           Export output file (implied --export)
             -j, --json                       Dump Models to json format
             -p, --pretty                     Pretty Export
             -M, --mongo                      The import/export operation will be performed on Mongo (default)
