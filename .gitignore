@@ -34,4 +34,7 @@ config/*.yml
 # *.ipr
 # *.iml
 # *.iws
+.ruby-version
+.ruby-gemset
+
 
