@@ -13,7 +13,7 @@ module DbTools
 
     API_VERSION = 'v2'
     TMP_DIR = File.expand_path '../../../tmp', __FILE__
-    CACHED_API_FILE = "#{TMP_DIR}/drive-#{API_VERSION}.cache"
+    CACHED_API_FILE = "drive-#{API_VERSION}.cache"
 
     def initialize(config)
       set_config config
@@ -29,7 +29,7 @@ module DbTools
       @config[:google][:drive][:app_version]       = config[:google][:drive][:app_version]       ||  '0.0.1'
       @config[:google][:drive][:folder]            = config[:google][:drive][:folder]            ||  'Mongo'
       @config[:google][:drive][:tmp_dir]           = config[:google][:drive][:tmp_dir]           ||  TMP_DIR
-      @config[:google][:drive][:cached_api]        = config[:google][:drive][:cached_api]        ||  CACHED_API_FILE
+      @config[:google][:drive][:cached_api]        = config[:google][:drive][:cached_api]        ||  "#{@config[:google][:drive][:tmp_dir]}/#{CACHED_API_FILE}"
       @config[:google][:drive][:share][:users]     = config[:google][:drive][:share][:users]     ||  [ 'steve.weagraff@noxaos.com' ]
       @config[:google][:drive][:share][:perm_type] = config[:google][:drive][:share][:perm_type] ||  'user'
       @config[:google][:drive][:share][:role]      = config[:google][:drive][:share][:role]      ||  'writer'
@@ -52,13 +52,13 @@ module DbTools
     def set_drive_api
       # Load cached discovered API, if it exists. This prevents retrieving the
       # discovery document on every run, saving a round-trip to API servers.
-      if File.exist? CACHED_API_FILE
-        File.open(CACHED_API_FILE) do |file|
+      if File.exist? @config[:google][:drive][:cached_api]
+        File.open(@config[:google][:drive][:cached_api]) do |file|
           @drive = Marshal.load(file)
         end
       else
         @drive = @client.discovered_api('drive', API_VERSION)
-        File.open(CACHED_API_FILE, 'w') do |file|
+        File.open(@config[:google][:drive][:cached_api], 'w') do |file|
           Marshal.dump(@drive, file)
         end
       end

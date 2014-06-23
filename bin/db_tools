@@ -89,6 +89,7 @@ OptionParser.new do |opts|
 
   opts.on_tail('-h', '--help') do
     puts opts
+    puts ''
     exit
   end
 
@@ -131,6 +132,7 @@ else
 
     if options[:gzip]
       Tools.zip_it options[:export_file] unless options[:export_file].nil?
+      File.delete options[:export_file] unless options[:export_file].nil?
     end
   end
 end

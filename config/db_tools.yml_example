@@ -1,3 +1,4 @@
+data-dir:
 postgres:
   host: localhost
   port: 5432
@@ -10,7 +11,6 @@ mongo:
   database: dinosaurs
   collection: models
   query:  "\'{ modelid: { $in : %s } }\'"
-  data-dir:
 google:
   service:
     email: 1...@developer.gserviceaccount.com
