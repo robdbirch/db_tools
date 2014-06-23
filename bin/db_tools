@@ -111,7 +111,7 @@ options.merge! config.symbolize_keys
 def set_export_file(options)
   if options[:export_file].nil?
     if options[:db_operation] == 'postgres'
-      options[:export_file] = "postgres-export-#{DateTime.now.strftime('%Y%m%d%H%M%S%L')}.json"
+      options[:export_file] = "postgres-export-#{DateTime.now.strftime('%Y%m%d%H%M%S%L')}.sql"
     else
       options[:export_file] = "mongo-models-export-#{DateTime.now.strftime('%Y%m%d%H%M%S%L')}.json"
     end
