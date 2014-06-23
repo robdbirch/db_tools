@@ -20,20 +20,28 @@ module DbTools
         if @config[:db_operation] == 'mongo'
           @mongo = get_mongo
         else
-          @postgres = nil
+          @postgres = get_postgres
         end
       end
 
       def get_mongo
         if  @config[:direction] == 'export'
-          MongoExport.new(@config)
+          MongoExport.new @config
         else
-          MongoImport.new(@config)
+          MongoImport.new @config
+        end
+      end
+
+      def get_postgres
+        if  @config[:direction] == 'export'
+          PgExport.new @config
+        else
+          PgImport.new @config
         end
       end
 
       def mongo_import
-
+        @mongo.import
       end
 
       def mongo_export
@@ -50,6 +58,14 @@ module DbTools
 
       def mongo_delete_days_old(days)
 
+      end
+
+      def pg_export
+        @postgres.export
+      end
+
+      def pg_import
+        @postgres.import
       end
   end
 end

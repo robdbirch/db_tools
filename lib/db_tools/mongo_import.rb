@@ -12,6 +12,10 @@ module DbTools
       @config = config
     end
 
+    def import
+
+    end
+
   end
 
 end

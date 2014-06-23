@@ -13,7 +13,7 @@ options = {}
 options[:config] = File.expand_path '../../config/db_tools.yml', __FILE__
 options[:db] = 'aicore'
 options[:collection] = 'models'
-options[:export_file] = "mongo-models-export-#{DateTime.now.strftime('%Y%m%d%H%M%S%L')}.json"
+options[:export_file] = nil
 options[:direction] = 'export'
 options[:data_dir] = nil
 options[:models] = nil
@@ -73,6 +73,14 @@ OptionParser.new do |opts|
     options[:pretty] = true
   end
 
+  opts.on('-M', '--mongo', 'The import/export operation will be performed on Mongo (default)') do
+    options[:db_operation] = 'mongo'
+  end
+
+  opts.on('-P', '--postgres', 'The import/export operation will be performed on Postgres') do
+    options[:db_operation] = 'postgres'
+  end
+
   opts.on('-r', '--remote', 'Send backup to remote store (see config/db_tools.yml)') do
     options[:remote] = true
   end
@@ -100,8 +108,15 @@ ap options[:config]
 config = YAML.load(File.read(options[:config]))
 options.merge! config.symbolize_keys
 
-DbTools::Logging.create_logger STDOUT, ::Logger::DEBUG
-tools = Tools.new options
+def set_export_file
+  if options[:export_file].nil?
+    if options[:db_operation] == 'postgres'
+      options[:export_file] = "postgres-export-#{DateTime.now.strftime('%Y%m%d%H%M%S%L')}.json"
+    else
+      options[:export_file] = "mongo-models-export-#{DateTime.now.strftime('%Y%m%d%H%M%S%L')}.json"
+    end
+  end
+end
 
 def json_export(tools, options)
   if options[:pretty]
@@ -118,22 +133,50 @@ def prepend_dir(file, options)
   file
 end
 
-if options[:import_file] || options[:direction] == 'import'
-  tools.import
-else
-  if options[:json]
-    json_export tools, options
+def do_mongo(tools, options)
+  if options[:import_file] || options[:direction] == 'import'
+    options[:import_file] = prepend_dir options[:import_file], options
+    tools.mongo_import
   else
-    options[:export_file] = prepend_dir options[:export_file], options
-    tools.mongo_export
-    if options[:remote]
-      GoogleDrive.new(options).upload_file(options[:export_file]) unless options[:export_file].nil?
-    end
-
-    if options[:gzip]
-      Tools.zip_it options[:export_file] unless options[:export_file].nil?
-      File.delete options[:export_file] unless options[:export_file].nil?
+    if options[:json]
+      json_export tools, options
+    else
+      options[:export_file] = prepend_dir options[:export_file], options
+      tools.mongo_export
     end
   end
 end
+
+def do_postgres(tools, options)
+  if options[:import_file] || options[:direction] == 'import'
+    options[:import_file] = prepend_dir options[:import_file], options
+    tools.pg_import
+  else
+    options[:export_file] = prepend_dir options[:export_file], options
+    tools.pg_export
+  end
+end
+
+DbTools::Logging.create_logger STDOUT, ::Logger::DEBUG
+set_export_file
+tools = Tools.new options
+
+if options[:db_operation] == 'postgres'
+  do_postgres tools, options
+else
+  do_mongo tools, options
+end
+
+if options[:gzip]
+  Tools.zip_it options[:export_file] unless options[:export_file].nil?
+  File.delete options[:export_file] unless options[:export_file].nil?
+  options[:export_file] = options[:export_file] + '.gz'
+end
+
+if options[:remote]
+  GoogleDrive.new(options).upload_file(options[:export_file]) unless options[:export_file].nil?
+end
+
+
+
 
