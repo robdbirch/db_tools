@@ -5,21 +5,24 @@ Each `mongo` document contains a `lisp s-expression`, which can be dumped to a j
 This distribution comes with the hasty hack of two `SBCL` executables that will work on `linux` and `OS X`
 
 ## Usage
-
-            Usage: db_tool [options]
-                -c, --config config.yml          Contains config parameters
-                -D, --data-dir dir               import/export directory
-                -m, --models model               A comma separated list of one or more models
-                -i, --import                     Import Data
-                -x, --export                     Export Data (default)
-                -I, --import-file file           Import input file (implied import)
-                -O, --output-file file           Export output file (implied export)
-                -j, --json                       Dump Models to json format
-                -p, --pretty                     Pretty Export
-                -r, --remote                     Send backup to remote store (see config/db_tools.yml)
-                -z, --zip                        GZip exported files
-                -T, --template                   Dump a configuration template to standard out
-                -h, --help
+        
+        Usage: db_tools [options]
+            -c, --config config.yml          Contains config parameters
+            -D, --data-dir dir               Directory for import/export
+            -d, --days-old number_of_days    Delete backups that are so many days old
+            -m, --models model               A comma separated list of one or more models
+            -i, --import                     Import Data
+            -x, --export                     Export Data (default)
+            -I, --import-file file           Import input file (implied import)
+            -O, --output-file file           Export output file (implied export)
+            -j, --json                       Dump Models to json format
+            -p, --pretty                     Pretty Export
+            -M, --mongo                      The import/export operation will be performed on Mongo (default)
+            -P, --postgres                   The import/export operation will be performed on Postgres
+            -r, --remote                     Send backup to remote store (see config/db_tools.yml)
+            -z, --zip                        GZip exported files
+            -T, --template                   Dump configuration template to standard out
+            -h, --help
 
 ## Contributing
 

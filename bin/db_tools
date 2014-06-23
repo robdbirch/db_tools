@@ -25,7 +25,7 @@ options[:db_operation] = 'mongo' # or postgres
 options[:days_old] = nil
 
 OptionParser.new do |opts|
-  opts.banner = 'Usage: db_tool [options]'
+  opts.banner = 'Usage: db_tools [options]'
 
   opts.on('-c', '--config config.yml', 'Contains config parameters' ) do |c|
     options[:config] = c
