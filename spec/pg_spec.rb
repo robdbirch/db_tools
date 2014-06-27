@@ -80,7 +80,7 @@ describe 'postgres' do
       expect(File.exist? @config[:export_file]).to be true
     end
 
-    it 'import', :focus do
+    it 'import' do
       @config[:postgres][:database] = 'leadtrack_test'
       @config[:export_file] = @exp1_file
       pex1 = PgExport.new @config

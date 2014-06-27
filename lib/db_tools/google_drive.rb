@@ -70,7 +70,7 @@ module DbTools
     end
 
     def delete_file_id(file_id)
-      result = @client.execute(
+      @client.execute(
           :api_method => @drive.files.delete,
           :parameters => { 'fileId' => file_id }
       )
@@ -99,15 +99,26 @@ module DbTools
     end
 
     def insert_file(file, parent_id=nil)
+      schema = build_file_schema file, parent_id
+      media  = Google::APIClient::UploadIO.new(file, 'text/plain')
+      result = do_upload schema, media
+      DbTools.logger.debug result.data.to_hash
+      raise DbToolsError.new "An error occurred: #{result.data['error']['message']}" if result.status != 200
+      result.data.to_hash
+    end
+
+    def build_file_schema(file, parent_id)
       schema = @drive.files.insert.request_schema.new ({
           'title' => "#{File.basename(file)}",
           'description' => "Model from #{DateTime.now.iso8601}",
           'mimeType' => 'text/plain'
       })
       schema.parents = [ { 'id' => parent_id } ] unless parent_id.nil?
+      schema
+    end
 
-      media = Google::APIClient::UploadIO.new(file, 'text/plain')
-      result = @client.execute(
+    def do_upload(schema, media)
+      @client.execute(
           api_method: @drive.files.insert,
           body_object: schema,
           media: media,
@@ -116,19 +127,10 @@ module DbTools
               'alt' => 'json'
           }
       )
-      DbTools.logger.debug result.data.to_hash
-      raise DbToolsError.new "An error occurred: #{result.data['error']['message']}" if result.status != 200
-      result.data.to_hash
     end
 
     def share(file_id, user, perm_type='user', role='writer')
-      new_permission = @drive.permissions.insert.request_schema.new(
-          {
-              'value' => user,
-              'type' => perm_type,
-              'role' => role
-          }
-      )
+      new_permission = get_permission user, perm_type, role
       result = @client.execute(
           :api_method => @drive.permissions.insert,
           :body_object => new_permission,
@@ -142,11 +144,25 @@ module DbTools
       result.data.to_hash
     end
 
+    def get_permission(user, perm_type, role)
+      @drive.permissions.insert.request_schema.new(
+          {
+              'value' => user,
+              'type' => perm_type,
+              'role' => role
+          }
+      )
+    end
+
     def upload_file(file_name, parent_folder=nil)
       folder = parent_folder || @config[:google][:drive][:folder]
       folder_id = get_drive_item_id folder
       file_info = insert_file file_name, folder_id
-      @config[:google][:drive][:share][:users].each do |user|
+      share_files @config[:google][:drive][:share][:users], file_info
+    end
+
+    def share_files(users, file_info)
+      users.each do |user|
         share(
             file_info['id'],
             user,
@@ -155,6 +171,5 @@ module DbTools
         )
       end
     end
-
   end
 end
