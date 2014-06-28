@@ -22,8 +22,16 @@ module DbTools
 
     def set_config(config)
       @config = config
+      set_drive_service_params config
+      set_drive_params config
+    end
+
+    def set_drive_service_params(config)
       @config[:google][:service][:email]           = config[:google][:service][:email]           ||  SERVICE_ACCOUNT_EMAIL
       @config[:google][:service][:pkey_file]       = config[:google][:service][:pkey_file]       ||  SERVICE_ACCOUNT_PKCS12_FILE
+    end
+
+    def set_drive_params(config)
       @config[:google][:drive][:auth_user]         = config[:google][:drive][:auth_user]         ||  'robert.birch@noxaos.com'
       @config[:google][:drive][:app_name]          = config[:google][:drive][:app_name]          ||  'Sandbox'
       @config[:google][:drive][:app_version]       = config[:google][:drive][:app_version]       ||  '0.0.1'
