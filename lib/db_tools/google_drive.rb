@@ -22,25 +22,25 @@ module DbTools
 
     def set_config(config)
       @config = config
-      set_drive_service_params config
-      set_drive_params config
+      set_drive_service_params @config[:google][:service],config[:google][:service]
+      set_drive_params @config[:google][:drive], config[:google][:drive]
     end
 
-    def set_drive_service_params(config)
-      @config[:google][:service][:email]           = config[:google][:service][:email]           ||  SERVICE_ACCOUNT_EMAIL
-      @config[:google][:service][:pkey_file]       = config[:google][:service][:pkey_file]       ||  SERVICE_ACCOUNT_PKCS12_FILE
+    def set_drive_service_params(service, config)
+      service[:email]     = config[:email]     ||  SERVICE_ACCOUNT_EMAIL
+      service[:pkey_file] = config[:pkey_file] ||  SERVICE_ACCOUNT_PKCS12_FILE
     end
 
-    def set_drive_params(config)
-      @config[:google][:drive][:auth_user]         = config[:google][:drive][:auth_user]         ||  'robert.birch@noxaos.com'
-      @config[:google][:drive][:app_name]          = config[:google][:drive][:app_name]          ||  'Sandbox'
-      @config[:google][:drive][:app_version]       = config[:google][:drive][:app_version]       ||  '0.0.1'
-      @config[:google][:drive][:folder]            = config[:google][:drive][:folder]            ||  'Mongo'
-      @config[:google][:drive][:tmp_dir]           = config[:google][:drive][:tmp_dir]           ||  TMP_DIR
-      @config[:google][:drive][:cached_api]        = config[:google][:drive][:cached_api]        ||  "#{@config[:google][:drive][:tmp_dir]}/#{CACHED_API_FILE}"
-      @config[:google][:drive][:share][:users]     = config[:google][:drive][:share][:users]     ||  [ 'steve.weagraff@noxaos.com' ]
-      @config[:google][:drive][:share][:perm_type] = config[:google][:drive][:share][:perm_type] ||  'user'
-      @config[:google][:drive][:share][:role]      = config[:google][:drive][:share][:role]      ||  'writer'
+    def set_drive_params(drive, config)
+      drive[:auth_user]         = config[:auth_user]         ||  'robert.birch@noxaos.com'
+      drive[:app_name]          = config[:app_name]          ||  'Sandbox'
+      drive[:app_version]       = config[:app_version]       ||  '0.0.1'
+      drive[:folder]            = config[:folder]            ||  'Mongo'
+      drive[:tmp_dir]           = config[:tmp_dir]           ||  TMP_DIR
+      drive[:cached_api]        = config[:cached_api]        ||  "#{@config[:google][:drive][:tmp_dir]}/#{CACHED_API_FILE}"
+      drive[:share][:users]     = config[:share][:users]     ||  [ 'steve.weagraff@noxaos.com' ]
+      drive[:share][:perm_type] = config[:share][:perm_type] ||  'user'
+      drive[:share][:role]      = config[:share][:role]      ||  'writer'
     end
 
     def init_google
